@@ -6,9 +6,7 @@ X = np.array([[0, 1], [0, 0], [1, 0], [1, 1]])
 y = np.array([[1, 0, 1, 0]]).T
 
 # We will build a neuralnet with 2 features, 1 hidden layer with 2 hidden units
-neuralnet = NeuralNet(2, 1, 4)
-
-print("Checking gradients", neuralnet.check_gradients(X, y))
+neuralnet = NeuralNet(2, 1, 3)
 
 # Let's see what our cost is before training and the predictions
 print("Cost before training", neuralnet.cost(X, y))

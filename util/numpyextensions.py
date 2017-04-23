@@ -81,5 +81,5 @@ class NumpyExtensions(object):
         return NumpyExtensions.reshape(flat_M,
                                        neuralnet.input_variables,
                                        neuralnet.hidden_layers,
-                                       neuralnet.hidden_layer_size,
+                                       neuralnet.hidden_units,
                                        neuralnet.output_variables)

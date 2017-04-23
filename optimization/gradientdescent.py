@@ -14,7 +14,6 @@ def gradient_descent(start_thetas, cost_func, gradient_func, args=tuple(),
 
         l = len(cost_history)
         diff = cost_history[l-2] - cost_history[l-1]
-        #print(diff)
         return abs(diff) < diff_threshold or cost_history[l-1] < cost_threshold
 
     # Calculate the first cost
@@ -24,13 +23,10 @@ def gradient_descent(start_thetas, cost_func, gradient_func, args=tuple(),
     thetas = start_thetas
     while not converged:
         i += 1
-        #print("Iteration",i)
-        #print(thetas.shape)
         # do something here
         thetas -= learning_rate * gradient_func(*f_args)
         f_args[0] = thetas
         cost_history.append(cost_func(*f_args))
-        #print(cost_history[len(cost_history)-1])
         converged = has_converged(i, max_iter, cost_history)
 
     return thetas
