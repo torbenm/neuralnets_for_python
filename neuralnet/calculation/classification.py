@@ -30,7 +30,7 @@ class NeuralNetClassification(CalculationBase):
         # Return last z values, a's, and z's
         return a[nl],a,z
 
-    def _cost(self, thetas, X, y, DEBUG_COST = False):
+    def _cost(self, thetas, X, y):
         # Do forward propagation
         h,_,_ = self._forwardpropagate(thetas, X)
 
@@ -39,10 +39,6 @@ class NeuralNetClassification(CalculationBase):
 
         # Get the average cost
         c = (-1/(X.shape[0])) * np.sum(np.sum(total_cost))
-        if DEBUG_COST:
-            print(c, self.neuralnet.p_check_gradients(thetas, X, y))
-            if(c > 1):
-                self.neuralnet.p_check_gradients(thetas, X, y, True)
         return c
 
     def _gradients(self, thetas, X, y):

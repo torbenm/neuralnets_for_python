@@ -54,38 +54,10 @@ class NeuralNet(object):
             perturb[i] = 0
         return numgrad
 
-    def p_numerical_gradients(self, thetas, X, y, epsilon = 1e-4):
-        flat_thetas = npe.flatten(thetas)
-        numgrad = np.zeros(flat_thetas.shape)
-        perturb = np.zeros(flat_thetas.shape)
-        for i in range(0, flat_thetas.size):
-            perturb[i] = epsilon
-            loss1 = self.get_algorithms()._flat_cost(flat_thetas - perturb, X, y, False)
-            loss2 = self.get_algorithms()._flat_cost(flat_thetas + perturb, X, y, False)
-            numgrad[i] = (loss2 - loss1)/ (2*epsilon)
-            perturb[i] = 0
-        return numgrad
-
     def check_gradients(self, X, y, do_print = False, imprecision = 1e-4, epsilon = 1e-8):
         flat_thetas = npe.flatten(self.thetas)
         algorithmic = self.get_algorithms()._flat_gradients(flat_thetas, X, y)
         numerical = self.numerical_gradients(X, y, epsilon)
-        all_match = True
-        for i in range(0, flat_thetas.size):
-            is_match = abs(algorithmic[i] - numerical[i]) < imprecision
-            all_match = all_match and is_match
-            if(do_print):
-                print(i, numerical[i], algorithmic[i], is_match)
-        if(do_print and all_match):
-            print("All gradients are matching")
-        elif(do_print and not all_match):
-            print("Not all gradients are matching")
-        return all_match
-
-    def p_check_gradients(self, thetas, X, y, do_print = False, imprecision = 1e-4, epsilon = 1e-8):
-        flat_thetas = npe.flatten(thetas)
-        algorithmic = self.get_algorithms()._flat_gradients(flat_thetas, X, y)
-        numerical = self.p_numerical_gradients(thetas, X, y, epsilon)
         all_match = True
         for i in range(0, flat_thetas.size):
             is_match = abs(algorithmic[i] - numerical[i]) < imprecision
