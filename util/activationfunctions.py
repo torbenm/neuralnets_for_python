@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.special
 
 
 class ActivationFunctions(object):
@@ -16,4 +17,9 @@ class ActivationFunctions(object):
         """
         if derivation:
             return z * (1 - z)
-        return 1 / (1 + np.exp(-z))
+        # Catch boundaries, as precision loss will lead to the result being 0 or 1.
+        # However, this leads to further errors when calculating the cost.
+        z[z < -709] = -709
+        z[z > 19] = 19
+        s = 1.0 / (1.0 + np.exp(-z))
+        return s

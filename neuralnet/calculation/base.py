@@ -34,9 +34,9 @@ class CalculationBase(object):
     def _cost(self, theta, X, y):
         pass
 
-    def _flat_cost(self, flat_thetas, X, y, *args):
+    def _flat_cost(self, flat_thetas, X, y, DEBUG_COST=False, *args):
         thetas = npe.reshape_for_neuralnet(flat_thetas, self.neuralnet)
-        return self._cost(thetas, X, y)
+        return self._cost(thetas, X, y, DEBUG_COST)
 
     def cost(self, X, y):
         return self._cost(self.neuralnet.thetas, X, y)

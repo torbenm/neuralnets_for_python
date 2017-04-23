@@ -16,7 +16,7 @@ print("Predictions before training", neuralnet.predict(X))
 
 # Let's train the neural net
 print("Training the neural net....")
-neuralnet.train(X, y, epsilon=0.00000001)
+neuralnet.train(X, y, learning_rate=7)
 
 print("Cost after training", neuralnet.cost(X, y))
 print("Predictions after training", np.around(neuralnet.predict(X)))

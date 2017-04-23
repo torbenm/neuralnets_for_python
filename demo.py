@@ -2,28 +2,25 @@ from neuralnet.neuralnet import NeuralNet
 import numpy as np
 
 from util.numpyextensions import NumpyExtensions
-
+np.random.seed(1)
 X = np.array([[0, 1], [0, 0], [1, 0], [1, 1]])
 y = np.array([[1, 0, 1, 0]]).T
 
-# nn = NeuralNet(2, hd_layers= 1, hd_layers_size=2)
-nn = NeuralNet(2, 1, 8)
+CORRECT = 0
+FAILED = 0
 
-print(nn.thetas)
-#print(NumpyExtensions.reshape_for_neuralnet(NumpyExtensions.flatten(nn.thetas), nn))
+def run_neural_net(iter, X, y):
+    print("Running iteration number",iter)
+    nn = NeuralNet(2, 1, 3)
+    nn.train(X, y, learning_rate=4)
+    print(nn.cost(X,y))
+    return nn.cost(X,y) < 1e-3
 
-#nn.check_gradients(X, y, True)
-#print("NUmerical", nn.numerical_gradients(X, y))
-#print("Algorithmical", nn.gradients(X, y))
-#print(nn.cost(X, y))
-
-#print(nn.thetas, thetas)
-#nn.thetas = [np.array([[-30], [20], [20]])]
-#print(nn.forward_propagate(X))
-#print(nn.gradients(X, y))
-nn.train(X, y)
-#print(nn.thetas)
-#print(nn.cost(X, y))
+for i in range(0, 1):
+    if run_neural_net(i, X, y):
+        CORRECT += 1
+    else:
+        FAILED += 1
 
 
-print(np.around(nn.predict(X), decimals = 2))
+print("Correct:", CORRECT, "Failed:", FAILED)
