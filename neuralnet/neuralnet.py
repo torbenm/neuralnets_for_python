@@ -42,22 +42,22 @@ class NeuralNet(object):
     def gradients(self, X, y):
         return NeuralNetClassification(self).gradients(X, y)
 
-    def numerical_gradients(self, X, y, epsilon = 1e-4):
+    def numerical_gradients(self, X, y, epsilon = 1e-4, lambda_ = 3):
         flat_thetas = npe.flatten(self.thetas)
         numgrad = np.zeros(flat_thetas.shape)
         perturb = np.zeros(flat_thetas.shape)
         for i in range(0, flat_thetas.size):
             perturb[i] = epsilon
-            loss1 = self.get_algorithms()._flat_cost(flat_thetas - perturb, X, y)
-            loss2 = self.get_algorithms()._flat_cost(flat_thetas + perturb, X, y)
+            loss1 = self.get_algorithms()._flat_cost(flat_thetas - perturb, X, y, lambda_)
+            loss2 = self.get_algorithms()._flat_cost(flat_thetas + perturb, X, y, lambda_)
             numgrad[i] = (loss2 - loss1)/ (2*epsilon)
             perturb[i] = 0
         return numgrad
 
-    def check_gradients(self, X, y, do_print = False, imprecision = 1e-4, epsilon = 1e-8):
+    def check_gradients(self, X, y, do_print = False, imprecision = 1e-8, epsilon = 1e-8, lambda_ = 3):
         flat_thetas = npe.flatten(self.thetas)
-        algorithmic = self.get_algorithms()._flat_gradients(flat_thetas, X, y)
-        numerical = self.numerical_gradients(X, y, epsilon)
+        algorithmic = self.get_algorithms()._flat_gradients(flat_thetas, X, y, lambda_)
+        numerical = self.numerical_gradients(X, y, epsilon, lambda_)
         all_match = True
         for i in range(0, flat_thetas.size):
             is_match = abs(algorithmic[i] - numerical[i]) < imprecision
@@ -73,22 +73,22 @@ class NeuralNet(object):
     def get_algorithms(self):
         return NeuralNetClassification(self)
 
-    def train(self, X, y, learning_rate = 0.1, cost_threshold=1e-6, diff_threshold=1e-16, max_iter=10000, min_iter=0):
+    def train(self, X, y, learning_rate = 0.1, cost_threshold=1e-6, diff_threshold=1e-16, max_iter=10000, min_iter=0, lambda_ = 3):
         nclass = NeuralNetClassification(self)
-        # self.thetas = npe.reshape_for_neuralnet(fmin_cg(
+        #self.thetas = npe.reshape_for_neuralnet(fmin_cg(
         #         f=nclass._flat_cost,
         #         x0=npe.flatten(self.thetas),
         #         fprime=nclass._flat_gradients,
         #         args=(X, y),
-        #         epsilon=epsilon,
-        #         gtol=gtol,
+        #         epsilon=learning_rate,
+        #        # gtol=gtol,
         #         disp=False,
-        #         maxiter=maxiter), self)
+        #         maxiter=50), self)
         self.thetas = npe.reshape_for_neuralnet(gradient_descent(
             start_thetas=npe.flatten(self.thetas),
             cost_func=nclass._flat_cost,
             gradient_func=nclass._flat_gradients,
-            args=(X,y),
+            args=(X,y, lambda_),
             learning_rate=learning_rate,
             min_iter=min_iter,
             max_iter=max_iter,

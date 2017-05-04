@@ -12,9 +12,11 @@ neuralnet = NeuralNet(2, 1, 3)
 print("Cost before training", neuralnet.cost(X, y))
 print("Predictions before training", neuralnet.predict(X))
 
+print("Checking gradients", neuralnet.check_gradients(X, y))
+
 # Let's train the neural net
 print("Training the neural net....")
-neuralnet.train(X, y, learning_rate=7)
+neuralnet.train(X, y, learning_rate=3)
 
 print("Cost after training", neuralnet.cost(X, y))
 print("Predictions after training", np.around(neuralnet.predict(X)))

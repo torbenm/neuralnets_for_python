@@ -19,7 +19,7 @@ class NeuralNetClassification(CalculationBase):
         # Init variables
         a = [None]*(nl+1) # Activation values, equal to z with applied activation method
         z = [None]*(nl+1) # z values
-        a[0] = X # Starting with X
+        a[0] = X # Starting with X as input
 
         # Iterate over values to calculate a,z
         for i in range(0, nl):
@@ -39,7 +39,24 @@ class NeuralNetClassification(CalculationBase):
 
         # Get the average cost
         c = (-1/(X.shape[0])) * np.sum(np.sum(total_cost))
+
         return c
+
+    def _regularized_cost(self, thetas, X, y, l):
+        # Calculate cost as usual
+        cost = self._cost(thetas, X, y)
+        nl = self.neuralnet.num_layers()
+
+        # Number of examples
+        m = X.shape[0]
+
+        # Calculate regularization for every layer
+        reg = 0
+        for i in range(0, nl):
+            reg += np.sum(np.sum(thetas[i][:, 1:] * np.sum(thetas[i][:, 1:])))
+
+        reg *= (l/(2*m))
+        return cost + reg
 
     def _gradients(self, thetas, X, y):
         # Load vars from neural net
@@ -54,14 +71,12 @@ class NeuralNetClassification(CalculationBase):
         # Do forward propagation, but here we don't need the result but the built vars
         _,a,z = self._forwardpropagate(thetas,X)
 
-
-        #print(a[nl].shape, y.shape)
         delta[nl] = npe.add_ones(a[nl] - y).T
 
         # Calculate deltas
         for i in reversed(range(1, nl)):
             delta[i] = np.dot(thetas[i], delta[i+1][1:]) \
-                       * NeuralNetClassification.activate(a[i].T, True)
+                       * npe.add_ones(NeuralNetClassification.activate(z[i].T, True), 0)
         # Calculate DELTAS
         for i in range(0, nl):
             DELTA[i] = np.dot(delta[i+1][1:], a[i]).T
@@ -72,4 +87,16 @@ class NeuralNetClassification(CalculationBase):
 
         return GRADIENTS
 
+    def _regularized_gradients(self, thetas, X, y, l):
+        # Calculate gradients as usual
+        gradients = self._gradients(thetas, X, y)
+
+        # Number of examples & layers
+        m = X.shape[0]
+        nl = self.neuralnet.num_layers()
+
+        for i in range(0, nl):
+            gradients[i] += npe.add_zeros((l/m) * thetas[i][:, 1:],1)
+
+        return gradients
 

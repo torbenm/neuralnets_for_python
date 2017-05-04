@@ -12,7 +12,8 @@ FAILED = 0
 def run_neural_net(iter, X, y):
     print("Running iteration number",iter)
     nn = NeuralNet(2, 1, 3)
-    nn.train(X, y, learning_rate=4)
+    #nn.train(X, y, learning_rate=0.4, lambda_=10)
+    nn.check_gradients(X, y, do_print=True, lambda_=0.3)
     print(nn.cost(X,y))
     return nn.cost(X,y) < 1e-3
 

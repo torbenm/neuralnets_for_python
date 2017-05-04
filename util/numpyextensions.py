@@ -28,6 +28,17 @@ class NumpyExtensions(object):
         return np.insert(X, 0, [1], axis=axis)
 
     @staticmethod
+    def add_zeros(X, axis=1):
+        """
+        Adds zeros in rows/columns to the given matrix X.
+        :param X: The matrix which should be extended.
+        :param axis: The axis to which insert the zeros. Default is 1, thus adds a
+        column of zeros. With 0, it adds a row of zeros
+        :return: The matrix X, extended by ones.
+        """
+        return np.insert(X, 0, [0], axis=axis)
+
+    @staticmethod
     def flatten(M) -> np.ndarray:
         """
         Flattens a Matrix M to a single-dimension array.

@@ -41,8 +41,22 @@ class CalculationBase(object):
     def cost(self, X, y):
         return self._cost(self.neuralnet.thetas, X, y)
 
+    # REGULARIZED COST
+
+    @abstractmethod
+    def _regularized_cost(self, theta, X, y, l):
+        pass
+
+    def _flat_regularized_cost(self, flat_thetas, X, y, l, *args):
+        thetas = npe.reshape_for_neuralnet(flat_thetas, self.neuralnet)
+        return self._regularized_cost(thetas, X, y, l)
+
+    def regularized_cost(self, X, y, l):
+        return self._regularized_cost(self.neuralnet.thetas, X, y, l)
+
     # GRADIENTS
 
+    @abstractmethod
     def _gradients(self, theta, X, y):
         pass
 
@@ -54,3 +68,18 @@ class CalculationBase(object):
 
     def gradients(self, X, y):
         return self._gradients(self.neuralnet.thetas, X, y)
+
+    # REGULARIZED GRADIENTS
+    
+    @abstractmethod
+    def _regularized_gradients(self, theta, X, y, l):
+        pass
+
+    def _flat_regularized_gradients(self, flat_thetas, X, y, l, *args):
+        thetas = npe.reshape_for_neuralnet(flat_thetas, self.neuralnet)
+        gradients = self._regularized_gradients(thetas, X, y, l)
+        f = npe.flatten(gradients)
+        return f
+
+    def regularized_gradients(self, X, y, l):
+        return self._regularized_gradients(self.neuralnet.thetas, X, y, l)
