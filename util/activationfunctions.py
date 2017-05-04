@@ -16,7 +16,7 @@ class ActivationFunctions(object):
         :return: The result of the sigmoid function. It has the same shape as z
         """
         if derivation:
-            return z * (1 - z)
+            return ActivationFunctions.sigmoid(z) * (1-ActivationFunctions.sigmoid(z))
         # Catch boundaries, as precision loss will lead to the result being 0 or 1.
         # However, this leads to further errors when calculating the cost.
         z[z < -709] = -709
